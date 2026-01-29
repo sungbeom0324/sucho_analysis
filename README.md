@@ -4,7 +4,7 @@ Compact analysis tool for preocessing NanoAOD format data.
 Author : Sungbeom Cho (Korea Univ.)  
   
 - Primarily written for fast H → Zγ study with recent Run3 data.  
-- Avoided unnecessary factorization, enabling rapid application and clear readability of the logical flow.  
+- Less factorizations for rapid application and readability.  
 - HTCondor scripts are included for batch processing.
 
 NOTE : Later will be updated to use relative paths, along with a cleanup of external dependency files.  
