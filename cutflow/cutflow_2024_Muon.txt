@@ -1,0 +1,13 @@
+=== Merged Cutflow (all files summed) ===
+3595358864   All events
+3472523243   Pass Golden JSON (data only)
+152367530    S1: >=2 good OS same flavour leptons (e/mu. not combined)
+120391807    S2+S3: HLT + leading/subleading pT
+919061       S4: >=1 good photon
+919061       S5(part): OS pair exists
+261339       S5: Onshell Z (80-100)
+187489       S6: g_pt/m_llg > 15/110
+178762       S7: (m_llg + m_ll) > 185
+154418       S8: 95 < m_llg < 180
+154000       S9: Event filters
+124033       S10 : Control region (veto 120 < llg < 130)

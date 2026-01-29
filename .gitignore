@@ -1,0 +1,29 @@
+# Recursive veto file
+*.root
+*.hepmc
+*.hepmc.gz
+*.log
+*.out
+*.err
+*.json
+json.hpp
+
+# Recursive directory
+Archive
+logs
+
+# Local directory or file
+/Archive
+/fit
+/list
+/plot_2026Jan24
+/skim_golden
+/ReadMe.txt
+/results
+
+# Depth = 1
+/cutflow/result*
+/plot/plots*
+/reco/data/
+/reco/reco_single_Jan28.C
+/slim/list*txt

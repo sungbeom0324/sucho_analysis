@@ -1,0 +1,18 @@
+universe        = vanilla
+executable      = run_slim.sh
+
+arguments       = $(input)
+
+log             = logs/slim_$(ClusterId)_$(ProcId).log
+output          = logs/slim_$(ClusterId)_$(ProcId).out
+error           = logs/slim_$(ClusterId)_$(ProcId).err
+
+request_memory  = 2000
+request_cpus    = 1
+
+getenv = True
+should_transfer_files = NO
+
+max_idle = 200
+
+queue input from /u/user/sucho/cms_open_data_root/sucho_analysis/slim/list_2023_EGamma_NanoAODv15_pnfs_26Jan13.txt
