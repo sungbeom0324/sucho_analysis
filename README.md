@@ -1,7 +1,9 @@
+---
+## sucho_analysis  
 Compact analysis tool for preocessing NanoAOD format data.  
 Author : Sungbeom Cho (Korea Univ.)  
   
-- Primarily written for fast Higgs->Zgamma study with recent Run3 data.
+- Primarily written for fast H → Zγ study with recent Run3 data.  
 - Avoided unnecessary factorization, enabling rapid application and clear readability of the logical flow.  
 - HTCondor scripts are included for batch processing.
 
