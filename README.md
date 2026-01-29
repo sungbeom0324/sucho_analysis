@@ -7,7 +7,7 @@ Author : Sungbeom Cho (Korea Univ.)
 - Less factorizations for rapid application and readability.  
 - HTCondor scripts are included for batch processing.
 
-NOTE : Later will be updated to use relative paths, along with a cleanup of external dependency files.  
+NOTE : To be updated to use relative paths, along with a cleanup of external dependency files.  
 
 ___
 ### slim
