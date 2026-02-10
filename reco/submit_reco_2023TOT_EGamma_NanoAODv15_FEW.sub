@@ -1,0 +1,19 @@
+universe        = vanilla
+executable      = run_reco.sh
+
+arguments       = $(input)
+
+log             = logs/reco_$(ClusterId)_$(ProcId).log
+output          = logs/reco_$(ClusterId)_$(ProcId).out
+error           = logs/reco_$(ClusterId)_$(ProcId).err
+
+request_memory  = 2000
+request_cpus    = 1
+
+getenv = True
+should_transfer_files = NO
+
+max_idle = 200
+
+# slimmed 파일들의 리스트를 적어둔 텍스트 파일에서 한 줄씩 읽어옴
+queue input from /pnfs/knu.ac.kr/data/cms/store/user/sucho/slimmed/data/list_2023TOT_EGamma_NanoAODv15_slimmed_FEW.txt

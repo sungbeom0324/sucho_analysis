@@ -2,6 +2,11 @@
 How to run this "slim" directory.
 You may slim ALL era. And then select you want in slimmed data.
 ======= Step 0. List up ==========
+# 2022EE
+## NanoAODv12
+find /pnfs/knu.ac.kr/data/cms/store/data/Run2022[EFG]/Muon/NANOAOD/22Sep2023* -type f -name "*root" > list_pnfs_2022EFG_Muon_NanoAODv12.txt
+find /pnfs/knu.ac.kr/data/cms/store/data/Run2022[EFG]/EGamma/NANOAOD/22Sep2023* -type f -name "*root" > list_pnfs_2022EFG_EGamma_NanoAODv12.txt
+
 # 2023
 ## NanoAODv12
 find /pnfs/knu.ac.kr/data/cms/store/data/Run2023*/Muon*/NANOAOD/22Sep2023* -type f -name "*root" > list_pnfs_2023_Muon_NanoAODv12.txt

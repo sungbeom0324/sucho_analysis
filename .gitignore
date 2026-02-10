@@ -23,6 +23,7 @@ logs
 
 # Depth = 1
 /cutflow/result*
+/cutflow/cf*txt
 /plot/plots*
 /reco/data/
 /reco/reco_single_Jan28.C

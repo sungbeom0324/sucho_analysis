@@ -33,44 +33,40 @@ cp "${SRCDIR}/reco_single_muon.C" "${WORKDIR}/" || {
     exit 1
 }
 
-# MakeSkimOutputPath.h 를 reco_single_muon.C 에서 #include "MakeSkimOutputPath.h" 하고 있으니까 같이 복사
 cp "${SRCDIR}/MakeSkimOutputPath.h" "${WORKDIR}/" || {
     echo "[ERROR] Failed to copy MakeSkimOutputPath.h" >&2
     exit 1
 }
 
-# (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
 cp "${SRCDIR}/GoodLumi.h" "${WORKDIR}/"|| {
     echo "[ERROR] Failed to copy GoodLumi.h" >&2
     exit 1
 }
 
-# (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
 cp "${SRCDIR}/PhotonSCeta.h" "${WORKDIR}/"|| {
     echo "[ERROR] Failed to copy GoodLumi.h" >&2
     exit 1
 }
 
-# (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
 cp "${SRCDIR}/json.hpp" "${WORKDIR}/"|| {
     echo "[ERROR] Failed to copy json.hpp" >&2
     exit 1
 }
 
-# (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
+cp "${SRCDIR}/Cert_Collisions2022_355100_362760_Golden.json" "${WORKDIR}/"|| {
+    echo "[ERROR] Failed to copy /Cert_Collisions2022_355100_362760_Golden.json" >&2
+    exit 1
+}
+
 cp "${SRCDIR}/Cert_Collisions2023_366442_370790_Golden.json" "${WORKDIR}/"|| {
     echo "[ERROR] Failed to copy Cert_Collisions2023_366442_370790_Golden.json" >&2
     exit 1
 }
 
-# (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
 cp "${SRCDIR}/Cert_Collisions2024_378981_386951_Golden.json" "${WORKDIR}/"|| {
     echo "[ERROR] Failed to copy Cert_Collisions2024_378981_386951_Golden.json" >&2
     exit 1
 }
-
-# (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
-# cp "${SRCDIR}/SomeOtherHeader.h" "${WORKDIR}/"
 
 # 5) 작업 디렉토리로 이동
 cd "${WORKDIR}" || {
@@ -84,7 +80,9 @@ echo "[INFO] BASE_OUT = ${BASE_OUT}"
 
 # 7) 연도에 따라 JSON 파일명 선택.
 GOLDEN_JSON=""
-if [[ "${INPUT_FILE}" == *"Run2023"* ]]; then
+if [[ "${INPUT_FILE}" == *"Run2022"* ]]; then
+  GOLDEN_JSON="Cert_Collisions2022_355100_362760_Golden.json"
+elif [[ "${INPUT_FILE}" == *"Run2023"* ]]; then
   GOLDEN_JSON="Cert_Collisions2023_366442_370790_Golden.json"
 elif [[ "${INPUT_FILE}" == *"Run2024"* ]]; then
   GOLDEN_JSON="Cert_Collisions2024_378981_386951_Golden.json"
