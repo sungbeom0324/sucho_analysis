@@ -46,6 +46,7 @@ struct CompareJob {
   std::string labelB = "B";
 
   std::string baseCut; // 공통 selection
+  std::string textKey = "";  // e.g. "txt_baseline" 
 
   // blind 옵션: expr == blindVar 인 plot에만 blind 적용
   bool useBlind = false;

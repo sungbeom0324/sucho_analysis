@@ -1,6 +1,8 @@
 #include "include/PlotTypes.h"
 #include "include/PlotUtils.h"
 #include "include/DrawCMSLabel.h"
+#include "include/PlotTextBlock.h"
+#include "include/DrawLumiTopRight.h"
 
 #include <TROOT.h>
 #include <TSystem.h>
@@ -83,6 +85,10 @@ void plotCompareRatioPDF(const std::vector<CompareJob>& jobs, const char* outdir
       leg.Draw();
 
       DrawCMSLabel(0.12, 0.96, "Run3", true); 
+      DrawLumiTopRight(job.lumiA_fb, job.lumiB_fb, job.labelA.c_str(), job.labelB.c_str());
+
+      auto lines = GetPlotTextPreset(job.textKey);
+      DrawTextBlockTR(lines);
 
       // ratio
       p2.cd();

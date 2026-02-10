@@ -1,5 +1,7 @@
 #include "include/PlotTypes.h"
 #include "include/PlotUtils.h"
+#include "include/DrawCMSLabel.h"
+#include "include/PlotTextBlock.h"
 
 #include <TROOT.h>
 #include <TSystem.h>
@@ -14,6 +16,12 @@
 void plot1ChainPDF(const std::vector<OneChainJob>& jobs, const char* outdir) {
   gROOT->SetBatch(kTRUE);
   gSystem->mkdir(outdir, kTRUE);
+  
+  gStyle->SetTitleY(0.97);
+  gStyle->SetOptStat(1110);
+  gStyle->SetStatX(0.88); // Stat right edge. 1 is closer to colour bar. 
+  gStyle->SetStatY(0.88);
+  gStyle->SetStatColor(0);
 
   for (const auto& job : jobs) {
     TChain ch(job.treename.c_str());
@@ -49,15 +57,21 @@ void plot1ChainPDF(const std::vector<OneChainJob>& jobs, const char* outdir) {
       hist.Sumw2();
 
       std::string cut = wrapAnd(job.baseCut, h.cut);
+
       ch.Draw(Form("%s>>h2_tmp", h.exprYX.c_str()), cut.c_str(), "goff");
 
       std::string autoY, autoX;
       splitYX(h.exprYX, autoY, autoX);
 
       c.Clear();
+      hist.SetTitle(job.tag.c_str());
       hist.GetXaxis()->SetTitle((h.xTitle.empty() ? autoX : h.xTitle).c_str());
       hist.GetYaxis()->SetTitle((h.yTitle.empty() ? autoY : h.yTitle).c_str());
+      //hist.SetStats(0); // Do not show Stats.
       hist.Draw("COLZ");
+        
+      // DrawCMSLabel(0.12, 0.96, "Run3", true);
+
       c.Print(outpdf.c_str());
     }
 

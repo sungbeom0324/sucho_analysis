@@ -1,10 +1,9 @@
 universe        = vanilla
-executable      = run_cutflow_muon.sh
+executable      = run_cutflow.sh
 
 # $(input) = filelist.txt 에서 한 줄씩 들어오는 root 파일 경로
 # 채널/샘플타입은 여기서 고정해도 되고, 필요하면 다른 submit 파일을 하나 더 만들면 됨
-
-arguments       = $(input) mu data
+arguments       = $(input) ele data /u/user/sucho/cms_open_data_root/sucho_analysis/cutflow/result_2023TOT_EGamma_NanoAODv12
 
 log             = logs/cutflow_$(ClusterId)_$(ProcId).log
 output          = logs/cutflow_$(ClusterId)_$(ProcId).out
@@ -18,4 +17,4 @@ should_transfer_files = NO
 
 max_idle = 200
 
-queue input from /pnfs/knu.ac.kr/data/cms/store/user/sucho/slimmed/data/list_2023_Muon_NanoAODv15_slimmed.txt
+queue input from /pnfs/knu.ac.kr/data/cms/store/user/sucho/slimmed/data/list_2023TOT_EGamma_NanoAODv12_slimmed.txt

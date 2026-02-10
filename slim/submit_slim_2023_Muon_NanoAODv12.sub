@@ -15,5 +15,4 @@ should_transfer_files = NO
 
 max_idle = 200
 
-#queue input from /u/user/sucho/cms_open_data_root/sucho_analysis/slim/list_pnfs_2023_Muon_NanoAODv12.txt
-queue input from /u/user/sucho/cms_open_data_root/sucho_analysis/slim/diff_Muon.txt
+queue input from /u/user/sucho/cms_open_data_root/sucho_analysis/slim/list_pnfs_2023_Muon_NanoAODv12.txt

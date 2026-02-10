@@ -15,4 +15,4 @@ should_transfer_files = NO
 
 max_idle = 200
 
-queue input from /u/user/sucho/cms_open_data_root/sucho_analysis/slim/list_2024_EGamma_PromptReco_pnfs_26Jan13.txt
+queue input from /u/user/sucho/cms_open_data_root/sucho_analysis/slim/list_pnfs_2024_EGamma_PromptReco.txt

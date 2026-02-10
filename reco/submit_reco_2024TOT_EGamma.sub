@@ -1,5 +1,5 @@
 universe        = vanilla
-executable      = run_reco_muon.sh
+executable      = run_reco.sh
 
 arguments       = $(input)
 
@@ -16,5 +16,4 @@ should_transfer_files = NO
 max_idle = 200
 
 # slimmed 파일들의 리스트를 적어둔 텍스트 파일에서 한 줄씩 읽어옴
-#queue input from /pnfs/knu.ac.kr/data/cms/store/user/sucho/slimmed/data/list_2024_Muon_PromptReco_slimmed.txt
-queue input from /u/user/sucho/cms_open_data_root/sucho_analysis/reco/diff_Muon.txt
+queue input from /pnfs/knu.ac.kr/data/cms/store/user/sucho/slimmed/data/list_2024TOT_EGamma_PromptReco_slimmed.txt

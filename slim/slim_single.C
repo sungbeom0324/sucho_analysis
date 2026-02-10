@@ -82,6 +82,13 @@ void slim_single(const char* inFileName,
     tin->SetBranchStatus("run", 1);
     tin->SetBranchStatus("luminosityBlock", 1);
 
+    // PV
+    tin->SetBranchStatus("PV_npvs", 1);
+    tin->SetBranchStatus("PV_npvsGood", 1);
+    tin->SetBranchStatus("PV_x", 1);
+    tin->SetBranchStatus("PV_y", 1);
+    tin->SetBranchStatus("PV_z", 1);
+
     // HLT (2023_2024_EGamma/Muon_NanoAODv15)
     tin->SetBranchStatus("HLT_Ele32_WPTight_Gsf", 1); // 31page Table 11.
     tin->SetBranchStatus("HLT_Ele30_WPTight_Gsf", 1); // 31page Table 11.

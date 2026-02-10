@@ -4,6 +4,7 @@
 //   root -l -q 'cutflow_single.C+("data","/path/to/input.root","mu","Cert_Collisions2023_366442_370790_Golden.json","results")'
 
 #include "GoodLumi.h" // GoldenJson (LoadGoldenJSON, PassesGoodLumi, goodLumiMap)
+#include "PhotonSCeta.h" // Calculate PhotonSCeta
 
 #include "TSystem.h"
 #include "TFile.h"
@@ -118,26 +119,30 @@ void cutflow_single(const char* sampleType,
   Bool_t Flag_hfNoisyHitsFilter, Flag_eeBadScFilter, Flag_ecalBadCalibFilter;
 
   // Leptons/photons
+  static const int MAXP_64 = 64;
+  static const int MAXP_128 = 128;
   Int_t nElectron = 0;
-  Int_t Electron_charge[16];
-  Short_t Electron_photonIdx[16];
-  Float_t Electron_pt[16], Electron_eta[16], Electron_phi[16], Electron_mass[16];
-  Float_t Electron_dz[16], Electron_dxy[16];
-  Float_t Electron_mvaHZZIso[16];
-  Float_t Electron_deltaEtaSC[16];
+  Int_t Electron_charge[MAXP_64];
+  Short_t Electron_photonIdx[MAXP_64];
+  Float_t Electron_pt[MAXP_64], Electron_eta[MAXP_64], Electron_phi[MAXP_64], Electron_mass[MAXP_64];
+  Float_t Electron_dz[MAXP_64], Electron_dxy[MAXP_64];
+  Float_t Electron_mvaHZZIso[MAXP_64];
+  Float_t Electron_deltaEtaSC[MAXP_64];
 
   Int_t nMuon = 0;
-  Bool_t Muon_isTracker[16], Muon_looseId[16];
-  Float_t Muon_dz[16], Muon_dxy[16], Muon_sip3d[16], Muon_pfRelIso03_all[16];
-  Float_t Muon_pt[16], Muon_eta[16], Muon_phi[16], Muon_mass[16];
-  Int_t   Muon_charge[16];
+  Bool_t Muon_isTracker[MAXP_64], Muon_looseId[MAXP_64];
+  Float_t Muon_dz[MAXP_64], Muon_dxy[MAXP_64], Muon_sip3d[MAXP_64], Muon_pfRelIso03_all[MAXP_64];
+  Float_t Muon_pt[MAXP_64], Muon_eta[MAXP_64], Muon_phi[MAXP_64], Muon_mass[MAXP_64];
+  Int_t   Muon_charge[MAXP_64];
 
   Int_t nPhoton = 0;
-  Bool_t Photon_mvaID_WP80[16];
-  Short_t Photon_electronIdx[16];
-  Float_t Photon_pt[16], Photon_eta[16], Photon_phi[16];
-  Float_t Photon_superclusterEta[16];
-  Bool_t Photon_isScEtaEB[16], Photon_isScEtaEE[16];
+  Bool_t Photon_mvaID_WP80[MAXP_128];
+  Short_t Photon_electronIdx[MAXP_128];
+  Float_t Photon_pt[MAXP_128], Photon_eta[MAXP_128], Photon_phi[MAXP_128];
+  Float_t Photon_superclusterEta[MAXP_128];
+  Bool_t Photon_isScEtaEB[MAXP_128], Photon_isScEtaEE[MAXP_128];
+  UChar_t PV_npvsGood;
+  Float_t PV_x = 0.0f, PV_y = 0.0f, PV_z = 0.0f;
 
   // Golden JSON
   UInt_t run = 0, luminosityBlock = 0;
@@ -193,6 +198,10 @@ void cutflow_single(const char* sampleType,
   tin->SetBranchAddress("Photon_pt", &Photon_pt);
   tin->SetBranchAddress("Photon_eta", &Photon_eta);
   tin->SetBranchAddress("Photon_phi", &Photon_phi);
+  tin->SetBranchAddress("PV_x", &PV_x);
+  tin->SetBranchAddress("PV_y", &PV_y);
+  tin->SetBranchAddress("PV_z", &PV_z);
+
   const bool has_Photon_superclusterEta = (tin->GetBranch("Photon_superclusterEta") != nullptr);
   if (has_Photon_superclusterEta){
     tin->SetBranchAddress("Photon_superclusterEta", &Photon_superclusterEta);
@@ -209,16 +218,15 @@ void cutflow_single(const char* sampleType,
   std::vector<std::string> cutNames = {
     "All events",
     "Pass Golden JSON (data only)",
-    "S1: >=2 good OS same flavour leptons (e/mu. not combined)",
-    "S2+S3: HLT + leading/subleading pT",
-    "S4: >=1 good photon",
-    "S5(part): OS pair exists",
-    "S5: Onshell Z (80-100)",
-    "S6: g_pt/m_llg > 15/110",
-    "S7: (m_llg + m_ll) > 185",
-    "S8: 95 < m_llg < 180",
-    "S9: Event filters",
-    "S10 : Control region (veto 120 < llg < 130)"
+    "S1: HLT + leading/subleading pT",
+    "S2: >=2 good OS same flavour leptons (e/mu. not combined)",
+    "S3: >=1 good photon",
+    "S4: Onshell Z (80-100)",
+    "S5: g_pt/m_llg > 15/110",
+    "S6: (m_llg + m_ll) > 185",
+    "S7: 95 < m_llg < 180",
+    "S8: Event filters",
+    "S9 : Control region (veto 120 < llg < 130)"
   };
   std::vector<long long> cnt(cutNames.size(), 0);
 
@@ -269,7 +277,6 @@ void cutflow_single(const char* sampleType,
 
     // muons
     for (int im = 0; im < std::min(nMuon, 16); ++im) {
-      //if (Muon_isTracker[im] != 1) continue; AN has slippery description.
       if (Muon_pt[im] <= 5.0) continue; // ScaReKIT (Run3) not applied.
       if (std::fabs(Muon_eta[im]) >= 2.4) continue;
       if (Muon_looseId[im] != 1) continue;
@@ -291,14 +298,17 @@ void cutflow_single(const char* sampleType,
       if (Photon_mvaID_WP80[ig] != 1) continue;
       if (Photon_pt[ig] <= 15.0) continue;
 
-      // Photon_SuperclusterEta exists after NanoAODv12.
-      float eta_for_sc = has_Photon_superclusterEta
-                       ? Photon_superclusterEta[ig]
-                       : Photon_eta[ig];
+      // 항상 PV 기반 origin-eta 계산 값을 사용 (Photon_superclusterEta는 사용 안 함)
+      const bool isEB = (Photon_isScEtaEB[ig] == 1);
+      float eta_for_sc = ComputeOriginEtaFromPV(isEB,
+                                                Photon_eta[ig], Photon_phi[ig],
+                                                PV_x, PV_y, PV_z);      
+
       float abs_eta_sc = std::fabs(eta_for_sc);
       bool inEB = (Photon_isScEtaEB[ig] == 1 && abs_eta_sc < 1.4442f);
       bool inEE = (Photon_isScEtaEE[ig] == 1 && abs_eta_sc > 1.566f && abs_eta_sc < 2.5f);
       if (!(inEB || inEE)) continue;
+
 
       TLorentzVector g; g.SetPtEtaPhiM(Photon_pt[ig], Photon_eta[ig], Photon_phi[ig], 0.0);
       bool overlap = false;
@@ -321,7 +331,22 @@ void cutflow_single(const char* sampleType,
       goodPho.push_back(ig);
     }
 
-    // S1 : Require at least one OPPOSITE-SIGN same flavour pair among good leptons
+    // S1
+    bool HLTpass =
+      //(HLT_Ele32_WPTight_Gsf==1 && leadElePt > 35) ||
+      (HLT_Ele30_WPTight_Gsf==1 && leadElePt > 35) ||
+      (HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL==1 && leadElePt > 25 && subleadElePt > 15) ||
+      //(HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ==1 && leadElePt > 25 && subleadElePt > 15) ||
+      (HLT_IsoMu24==1 && leadMuPt > 25) ||  // 25 in AN ; 20 in draw_pico
+      //(HLT_IsoMu27==1 && leadMuPt > 28) ||  // 28 in AN ; 20 in draw_pico
+      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL==1 && leadMuPt > 20 && subleadMuPt > 10) ||
+      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ==1 && leadMuPt > 20 && subleadMuPt > 10) ||
+      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8==1 && leadMuPt > 20 && subleadMuPt > 10) ||
+      (HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8==1 && leadMuPt > 20 && subleadMuPt > 10);
+    if (!HLTpass) continue;
+    cnt[2]++;
+
+    // S2 : Require at least one OPPOSITE-SIGN same flavour pair among good leptons
     bool hasOS = false;
     
     if (doEle) {
@@ -343,24 +368,10 @@ void cutflow_single(const char* sampleType,
     }
     
     if (!hasOS) continue;
-    cnt[2]++;
-
-    // S2+S3
-    bool HLTpass =
-      //(HLT_Ele32_WPTight_Gsf==1 && leadElePt > 35) ||
-      (HLT_Ele30_WPTight_Gsf==1 && leadElePt > 35) ||
-      (HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL==1 && leadElePt > 25 && subleadElePt > 15) ||
-      //(HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ==1 && leadElePt > 25 && subleadElePt > 15) ||
-      (HLT_IsoMu24==1 && leadMuPt > 25) ||  // 25 in AN ; 20 in draw_pico
-      //(HLT_IsoMu27==1 && leadMuPt > 28) ||  // 28 in AN ; 20 in draw_pico
-      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL==1 && leadMuPt > 20 && subleadMuPt > 10) ||
-      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ==1 && leadMuPt > 20 && subleadMuPt > 10) ||
-      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8==1 && leadMuPt > 20 && subleadMuPt > 10) ||
-      (HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8==1 && leadMuPt > 20 && subleadMuPt > 10);
-    if (!HLTpass) continue;
     cnt[3]++;
 
-    // S4
+
+    // S3
     if ((int)goodPho.size() < 1) continue;
     cnt[4]++;
 
@@ -397,13 +408,9 @@ void cutflow_single(const char* sampleType,
       }
     }
 
-    if (best_i < 0 || best_j < 0) continue;
-    // If the logic is true, this should make no difference since filtered already in OS2l selection.
-    cnt[5]++;
-
     double mll = best_mass;
     if (mll < 80 || mll > 100) continue;
-    cnt[6]++;
+    cnt[5]++;
 
     // leading photon (highest pT)
     int best_pho = -1;
@@ -428,13 +435,13 @@ void cutflow_single(const char* sampleType,
     double gpt  = Photon_pt[best_pho];
 
     if ((gpt / mllg) <= (15.0/110.0)) continue;
-    cnt[7]++;
+    cnt[6]++;
 
     if ((mllg + mll) <= 185.0) continue;
-    cnt[8]++;
+    cnt[7]++;
 
-    if (mllg <= 95 || mllg >= 180) continue;
-    cnt[9]++;
+    if (mllg <= 95 || mllg >= 180) continue; // Draw_pico is 100, AN is 95
+    cnt[8]++;
 
     bool EventFilterPass =
       (Flag_goodVertices==1) &&
@@ -446,11 +453,11 @@ void cutflow_single(const char* sampleType,
       (Flag_eeBadScFilter==1) &&
       (Flag_ecalBadCalibFilter==1);
     if (!EventFilterPass) continue;
-    cnt[10]++;
+    cnt[9]++;
 
     // control region
     if (mllg > 120.0 && mllg < 130.0) continue;
-    cnt[11]++;
+    cnt[10]++;
   }
 
   // print to stdout

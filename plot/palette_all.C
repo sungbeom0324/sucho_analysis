@@ -27,25 +27,46 @@ void palette_all(const char* outdir = "plots_out") {
   // ------------------------------------------------------------
   std::vector<OneChainJob> oneChainJobs = {
     {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2023_Muon_NanoAODv15_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2024TOT_Muon_PromptReco_reco.txt",
       "Events",
-      "Run2024_Muon_onechain",
+      "Run2024_PromptReco_Muon",
       "", // baseCut
-      {
-        { "Z_mass_mm",  "Z_mass_mm",  60,  60, 120, "m_{#mu#mu} [GeV]" },
-        { "Z_mass_mmg", "Z_mass_mmg", 80,  80, 200, "m_{#mu#mug} [GeV]" },
-        { "dR_mg",      "dR_mg",      40,   0,   4, "#DeltaR(#mu,#gamma)" }
+      { // 1D plots
+        //{ "Z_mass_mm",  "Z_mass_mm",  60,  60, 120, "m_{#mu#mu} [GeV]" },
+        //{ "Z_mass_mmg", "Z_mass_mmg", 80,  80, 200, "m_{#mu#mug} [GeV]" },
+        //{ "dR_mg",      "dR_mg",      40,   0,   4, "#DeltaR(#mu,#gamma)" }
       },
-      {
+      { // 2D plots
         { "Zmmg_vs_Zmm",
           "Z_mass_mmg:Z_mass_mm",
-          60, 60, 120,
-          80, 80, 200,
+          30, 75, 105, // x
+          95, 90, 185, // y
           "m_{#mu#mu} [GeV]",
           "m_{#mu#mug} [GeV]",
           "" }
       }
-    }
+    },
+
+    {
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2024TOT_EGamma_PromptReco_reco.txt",
+      "Events",
+      "Run2024_PromptReco_EGamma",
+      "", // baseCut
+      { // 1D plots
+        //{ "Z_mass_ee",  "Z_mass_ee",  60,  60, 120, "m_{ee} [GeV]" },
+        //{ "Z_mass_eeg", "Z_mass_eeg", 80,  80, 200, "m_{ee#gamma} [GeV]" },
+        //{ "dR_eg",      "dR_eg",      40,   0,   4, "#DeltaR(e,#gamma)" }
+      },
+      { // 2D plots
+        { "Zeeg_vs_Zee",
+          "Z_mass_eeg:Z_mass_ee",
+          30, 75, 105, // x
+          95, 90, 185, // y
+          "m_{ee} [GeV]",
+          "m_{ee#gamma} [GeV]",
+          "" }
+      }
+    },
   };
 
   // ------------------------------------------------------------
@@ -53,364 +74,136 @@ void palette_all(const char* outdir = "plots_out") {
   // ------------------------------------------------------------
   std::vector<CompareJob> compareJobs = {
 /*
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2023_Muon_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2024_Muon_PromptReco_reco.txt",
+    { // NanoAOD version (EGamma)
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2023TOT_EGamma_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2023TOT_EGamma_NanoAODv15_reco.txt",
       "Events",
-      "Muon_23_vs_24_compare",
-      "23_Muon",
-      "24_Muon",
+      "23TOT_EGamma_v12_vs_v15",
+      "23EG_v12",
+      "23EG_v15",
       "", // baseCut
+      "txt_baseline",
       false, "", 0, 0, // blind off
 
       1,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
+      27.756,     // 2023TOT Lumi
+      27.756,    //  Lumi
 
       {
-        { "Z_mass_mm",  "Z_mass_mm",  40, 70, 110, "m_{#mu#mu} [GeV]" },
-        { "Z_mass_mmg", "Z_mass_mmg", 80, 80, 200, "m_{#mu#mu#gamma} [GeV]" },
-        { "dR_mg",      "dR_mg",      40,  0,   4, "#DeltaR(#mu,#gamma)" }
+        { "Z_mass_ee",  "Z_mass_ee",  60,  60, 120, "m_{ee} [GeV]" },
+        { "Z_mass_eeg", "Z_mass_eeg", 80,  80, 200, "m_{ee#gamma} [GeV]" },
+        { "dR_eg",      "dR_eg",      40,   0,   4, "#DeltaR(e,#gamma)" },
+        { "PV_npvsGood", "PV_npvsGood", 100, 0, 100, "PV_npvsGood"},
+        { "AddPhoton_pt/Z_mass_eeg", "AddPhoton_pt/Z_mass_eeg", 60, 0, 0.6, "p^{#gamma}_{T}/m_{ee#gamma}"},
+        { "nGoodEle", "nGoodEle", 5,0,5},
+        { "Electron1_pt", "Electron_pt[leadEleIdx]", 200, 0, 200, "Electron1_pt"},
+        { "Electron2_pt", "Electron_pt[subleadEleIdx]", 100, 0, 100, "Electron2_pt"},
+        { "Electron1_SCeta", "Electron_eta[leadEleIdx]+Electron_deltaEtaSC[leadEleIdx]", 60, -3, 3, "Electron1_SCeta"},
+        { "Electron2_SCeta", "Electron_eta[subleadEleIdx]+Electron_deltaEtaSC[subleadEleIdx]", 60, -3, 3,"Electron2_SCEta"},
+        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[leadEleIdx]", 20, -1, 1, "Electron1_mvaHZZIso" },
+        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[subleadEleIdx]", 20, -1, 1, "Electron2_mvaHZZIso" },
+        { "nGoodPhoton", "nGoodPhoton", 5, 0, 5 },
+        { "AddPhoton_pt", "AddPhoton_pt", 100, 0, 100 },
+        { "AddPhoton_eta", "AddPhoton_eta", 60, -3, 3 },
       }
     },
 
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2024_EGamma_PromptReco_reco.txt",
+    { // NanoAOD version (Muon)
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2023TOT_Muon_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2023TOT_Muon_NanoAODv15_reco.txt",
       "Events",
-      "EGamma_23_vs_24_compare",
-      "23_EGamma",
-      "24_EGamma",
+      "23TOT_Muon_v12_vs_v15",
+      "23Muon_v12",
+      "23Muon_v15",
       "", // baseCut
+      "txt_baseline",
       false, "", 0, 0, // blind off
 
       1,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
+      27.756,     // 2023TOT Lumi
+      27.756,    //  Lumi
 
       {
-        { "Z_mass_ee",  "Z_mass_ee",  40, 70, 110, "m_{ee} [GeV]" },
-        { "Z_mass_eeg", "Z_mass_eeg", 80, 80, 200, "m_{ee#gamma} [GeV]" },
-        { "dR_eg",      "dR_eg",      40,  0,   4, "#DeltaR(e,#gamma)" }
+        { "Z_mass_mm",  "Z_mass_mm",  60,  60, 120, "m_{#mu#mu} [GeV]" },
+        { "Z_mass_mmg", "Z_mass_mmg", 80,  80, 200, "m_{#mu#mu#gamma} [GeV]" },
+        { "dR_mg",      "dR_mg",      40,   0,   4, "#DeltaR(#mu,#gamma)" },
+        { "PV_npvsGood", "PV_npvsGood", 100, 0, 100, "PV_npvsGood"},
+        { "AddPhoton_pt/Z_mass_mmg", "AddPhoton_pt/Z_mass_mmg", 60, 0, 0.6, "p^{#gamma}_{T}/m_{#mu#mu#gamma}"},
+        { "nGoodMuon", "nGoodMuon", 5,0,5},
+        { "Muon1_pt", "Muon_pt[leadMuonIdx]", 200, 0, 200, "Muon1_pt"},
+        { "Muon2_pt", "Muon_pt[subleadMuonIdx]", 100, 0, 100, "Muon2_pt"},
+        { "Muon1_SCeta", "Muon_eta[leadMuonIdx]", 60, -3, 3, "Muon1_eta"},
+        { "Muon2_SCeta", "Muon_eta[subleadMuonIdx]", 60, -3, 3,"Muon2_eta"},
+        { "nGoodPhoton", "nGoodPhoton", 5, 0, 5 },
+        { "AddPhoton_pt", "AddPhoton_pt", 100, 0, 100 },
+        { "AddPhoton_eta", "AddPhoton_eta", 60, -3, 3 },
       }
     },
 */
 
-
-/*
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024B_EGamma_PromptReco_reco.txt",
+    { // 2023_vs_2024 (EGamma)
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2023TOT_EGamma_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2024TOT_EGamma_PromptReco_reco.txt",
       "Events",
-      "EGamma_23_vs_24B",
-      "23C_EG",
-      "24B_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
+      "23EG_vs_v24EG",
+      "23EG",
+      "24EG",
+      "", // baseCut
+      "txt_baseline",
       false, "", 0, 0, // blind off
 
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
+      1,         // Normalization mode 1 = Lumi, 0 = Event
+      27.756,     // 2023CD
+      108.95,    //  2024TOT
 
       {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
+        { "Z_mass_ee",  "Z_mass_ee",  60,  60, 120, "m_{ee} [GeV]" },
+        { "Z_mass_eeg", "Z_mass_eeg", 80,  80, 200, "m_{ee#gamma} [GeV]" },
+        { "dR_eg",      "dR_eg",      40,   0,   4, "#DeltaR(e,#gamma)" },
+        { "PV_npvsGood", "PV_npvsGood", 100, 0, 100, "PV_npvsGood"},
+        { "AddPhoton_pt/Z_mass_eeg", "AddPhoton_pt/Z_mass_eeg", 60, 0, 0.6, "p^{#gamma}_{T}/m_{ee#gamma}"},
+        { "nGoodEle", "nGoodEle", 5,0,5},
+        { "Electron1_pt", "Electron_pt[leadEleIdx]", 200, 0, 200, "Electron1_pt"},
+        { "Electron2_pt", "Electron_pt[subleadEleIdx]", 100, 0, 100, "Electron2_pt"},
+        { "Electron1_SCeta", "Electron_eta[leadEleIdx]+Electron_deltaEtaSC[leadEleIdx]", 60, -3, 3, "Electron1_SCeta"},
+        { "Electron2_SCeta", "Electron_eta[subleadEleIdx]+Electron_deltaEtaSC[subleadEleIdx]", 60, -3, 3,"Electron2_SCEta"},
+        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[leadEleIdx]", 20, -1, 1, "Electron1_mvaHZZIso" },
+        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[subleadEleIdx]", 20, -1, 1, "Electron2_mvaHZZIso" },
+        { "nGoodPhoton", "nGoodPhoton", 5, 0, 5 },
+        { "AddPhoton_pt", "AddPhoton_pt", 100, 0, 100 },
+        { "AddPhoton_eta", "AddPhoton_eta", 60, -3, 3 },
       }
     },
 
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024C_EGamma_PromptReco_reco.txt",
+    { // 2023_vs_2024 (Muon)
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2023TOT_Muon_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_Feb03/data/list_2024TOT_Muon_PromptReco_reco.txt",
       "Events",
-      "EGamma_23_vs_24C",
-      "23C_EG",
-      "24C_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
+      "23Muon_vs_24Muon",
+      "23Muon",
+      "24Muon",
+      "", // baseCut
+      "txt_baseline",
       false, "", 0, 0, // blind off
 
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
+      1,         // Normalization mode 1 = Lumi, 0 = Event
+      27.756,     // 2023CD
+      108.95,     // 2024TOT
 
       {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
-      }
-    },
-
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024D_EGamma_PromptReco_reco.txt",
-      "Events",
-      "EGamma_23_vs_24D",
-      "23C_EG",
-      "24D_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
-      false, "", 0, 0, // blind off
-
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
-
-      {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
-      }
-    },
-
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024E_EGamma_PromptReco_reco.txt",
-      "Events",
-      "EGamma_23_vs_24E",
-      "23C_EG",
-      "24E_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
-      false, "", 0, 0, // blind off
-
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
-
-      {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
-      }
-    },
-
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024F_EGamma_PromptReco_reco.txt",
-      "Events",
-      "EGamma_23_vs_24F",
-      "23C_EG",
-      "24F_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
-      false, "", 0, 0, // blind off
-
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
-
-      {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
-      }
-    },
-
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024G_EGamma_PromptReco_reco.txt",
-      "Events",
-      "EGamma_23_vs_24G",
-      "23C_EG",
-      "24G_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
-      false, "", 0, 0, // blind off
-
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
-
-      {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
-      }
-    },
-
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024H_EGamma_PromptReco_reco.txt",
-      "Events",
-      "EGamma_23_vs_24H",
-      "23C_EG",
-      "24H_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
-      false, "", 0, 0, // blind off
-
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
-
-      {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
-      }
-    },
-
-    {
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024I_EGamma_PromptReco_reco.txt",
-      "Events",
-      "EGamma_23_vs_24I",
-      "23C_EG",
-      "24I_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
-      false, "", 0, 0, // blind off
-
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
-
-      {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
-      }
-    },
-*/
-    
-    { // 2023C vs 2024TOT
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2023_EGamma_NanoAODv15_reco.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco_eobject/data/list_2024TOT_EGamma_PromptReco_reco.txt",
-      "Events",
-      "EGamma_23_vs_24TOT",
-      "23C_EG",
-      "24TOT_EG",
-      "nElectron>=2 && nPhoton>= 1", // baseCut
-      false, "", 0, 0, // blind off
-
-      0,         // Normalization mode 1 = Lumi, 0 = Event
-      18.063,    // 2023 Lumi
-      108.95,    // 2024 Lumi
-
-      {
-        { "nElectron",  "nElectron",  7, 0, 7, "N_{e}" },
-        { "Electron1_pt", "Electron_pt[0]", 300, 0, 300, "Electron_pt1 [GeV]" },
-        { "Electron2_pt", "Electron_pt[1]", 100, 0, 100, "Electron_pt2 [GeV]" },
-        { "Electron1_SCeta", "Electron_eta[0] + Electron_deltaEtaSC[0]", 60, -3, 3, "Electron1_SCeta" },
-        { "Electron2_SCeta", "Electron_eta[1] + Electron_deltaEtaSC[1]", 60, -3, 3, "Electron2_SCeta" },
-        { "Electron1_mvaHZZIso", "Electron_mvaHZZIso[0]", 20, -1, 1, "Electron1_mvaHZZIso" },
-        { "Electron2_mvaHZZIso", "Electron_mvaHZZIso[1]", 20, -1, 1, "Electron2_mvaHZZIso" },
-        { "Electron1_HzzID_WP2022", "Electron_HzzID_WP2022[0]", 2, 0, 2, "Electron1_HzzID_WP2022" },
-        { "Electron2_HzzID_WP2022", "Electron_HzzID_WP2022[1]", 2, 0, 2, "Electron2_HzzID_WP2022" },
-        { "Electron_photonIdx_nMatch", "Electron_photonIdx_nMatch", 6, 0, 6, "Electron_photonIdx_nMatch" },
-        { "Electron_photonIdx_nMatch / nElectron", "Electron_photonIdx_nMatch/nElectron", 10, 0, 1, "Electron_photonIdx_nMatch / N_{e}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "nPhoton", "nPhoton", 6, 0, 6, "N_{#gamma}" },
-        { "Photon_electronIdx_nMatch", "Photon_electronIdx_nMatch", 6, 0, 6, "Photon_electronIdx_nMatch" },
-        { "Photon_electronIdx_nMatch / nPhoton", "Photon_electronIdx_nMatch/nPhoton", 10, 0, 1, "Photon_electronIdx_nMatch / N_{#gamma}" },
-        { "Photon1_pt", "Photon_pt[0]", 200, 0, 200, "Photon1_pt"},
-        { "Photon1_eta", "Photon_eta[0]", 60, -3, 3, "Photon1_eta"},
+        { "Z_mass_mm",  "Z_mass_mm",  60,  60, 120, "m_{#mu#mu} [GeV]" },
+        { "Z_mass_mmg", "Z_mass_mmg", 80,  80, 200, "m_{#mu#mu#gamma} [GeV]" },
+        { "dR_mg",      "dR_mg",      40,   0,   4, "#DeltaR(#mu,#gamma)" },
+        { "PV_npvsGood", "PV_npvsGood", 100, 0, 100, "PV_npvsGood"},
+        { "AddPhoton_pt/Z_mass_mmg", "AddPhoton_pt/Z_mass_mmg", 60, 0, 0.6, "p^{#gamma}_{T}/m_{#mu#mu#gamma}"},
+        { "nGoodMuon", "nGoodMuon", 5,0,5},
+        { "Muon1_pt", "Muon_pt[leadMuonIdx]", 200, 0, 200, "Muon1_pt"},
+        { "Muon2_pt", "Muon_pt[subleadMuonIdx]", 100, 0, 100, "Muon2_pt"},
+        { "Muon1_SCeta", "Muon_eta[leadMuonIdx]", 60, -3, 3, "Muon1_eta"},
+        { "Muon2_SCeta", "Muon_eta[subleadMuonIdx]", 60, -3, 3,"Muon2_eta"},
+        { "nGoodPhoton", "nGoodPhoton", 5, 0, 5 },
+        { "AddPhoton_pt", "AddPhoton_pt", 100, 0, 100 },
+        { "AddPhoton_eta", "AddPhoton_eta", 60, -3, 3 },
       }
     },
   };
@@ -419,6 +212,7 @@ void palette_all(const char* outdir = "plots_out") {
   // 3) Compare jobs (blind)
   //   - blind는 expr == blindVar 인 plot에만 적용
   // ------------------------------------------------------------
+/*
   std::vector<CompareJob> blindCompareJobs = {
     {
       "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2023_Muon_reco.txt",
@@ -443,7 +237,7 @@ void palette_all(const char* outdir = "plots_out") {
       }
     }
   };
-
+*/
   // ------------------------------------------------------------
   // Run
   // ------------------------------------------------------------
@@ -451,7 +245,7 @@ void palette_all(const char* outdir = "plots_out") {
   // 필요하면 켜기
   // (Form 포인터를 직접 넘기지 말고, TString에 담아서 .Data()로 넘기기)
   TString onechainDir = Form("%s/onechain", outdir);
-  // plot1ChainPDF(oneChainJobs, onechainDir.Data());
+  //plot1ChainPDF(oneChainJobs, onechainDir.Data());
   
   // 필요하면 켜기
   TString compareDir = Form("%s/compare", outdir);

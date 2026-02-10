@@ -46,6 +46,12 @@ cp "${SRCDIR}/GoodLumi.h" "${WORKDIR}/"|| {
 }
 
 # (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
+cp "${SRCDIR}/PhotonSCeta.h" "${WORKDIR}/"|| {
+    echo "[ERROR] Failed to copy GoodLumi.h" >&2
+    exit 1
+}
+
+# (다른 헤더들이 필요하면 여기서 추가로 cp 하면 됨)
 cp "${SRCDIR}/json.hpp" "${WORKDIR}/"|| {
     echo "[ERROR] Failed to copy json.hpp" >&2
     exit 1
@@ -70,7 +76,7 @@ cd "${WORKDIR}" || {
 }
 
 # 6) 출력 base 디렉토리
-BASE_OUT="/u/user/sucho/SE_UserHome/reco_eobject/"
+BASE_OUT="/u/user/sucho/SE_UserHome/reco_Feb03/"
 echo "[INFO] BASE_OUT = ${BASE_OUT}"
 
 # 7) 연도에 따라 JSON 파일명 선택.

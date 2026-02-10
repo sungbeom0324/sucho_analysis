@@ -1,5 +1,6 @@
 #include "MakeSkimOutputPath.h"  // used in skim.
 #include "GoodLumi.h" // GoldenJson
+#include "PhotonSCeta.h" 
 #include "TFile.h"
 #include "TTree.h"
 #include "TTreeFormula.h"
@@ -84,15 +85,33 @@ void reco_single_muon(const char* sampleType,
     Float_t Z_mass_mm  = -1.0;  // 선택된 OS ee 페어의 mass (없으면 -1)
     Float_t Z_mass_mmg = -1.0;  // photon 드레싱 후 mass (없으면 Z_ee, 그마저 없으면 -1)
     Float_t AddPhoton_pt = -1.0;
+    Float_t AddPhoton_eta = -99.0;
     Float_t dR_mg = -999; 
+    std::vector<float> Photon_SCeta;
+    Int_t leadEleIdx = -1, subleadEleIdx = -1;
+    Int_t leadMuonIdx = -1, subleadMuonIdx = -1;
+    Int_t nGoodEle = 0;
+    Int_t nGoodMuon = 0;
+    Int_t nGoodPhoton = 0;
 
     tout->Branch("Z_mass_mm",  &Z_mass_mm,  "Z_mass_mm/F");
     tout->Branch("Z_mass_mmg", &Z_mass_mmg, "Z_mass_mmg/F");
     tout->Branch("AddPhoton_pt", &AddPhoton_pt, "AddPhoton_pt/F");
+    tout->Branch("AddPhoton_eta", &AddPhoton_eta, "AddPhoton_eta/F");
     tout->Branch("dR_mg", &dR_mg, "dR_mg/F");
+    tout->Branch("Photon_SCeta", &Photon_SCeta);
+    tout->Branch("leadEleIdx", &leadEleIdx, "leadEleIdx/I");
+    tout->Branch("subleadEleIdx", &subleadEleIdx, "subleadEleIdx/I");
+    tout->Branch("leadMuonIdx", &leadMuonIdx, "leadMuonIdx/I");
+    tout->Branch("subleadMuonIdx", &subleadMuonIdx, "subleadMuonIdx/I");
+    tout->Branch("nGoodEle", &nGoodEle, "nGoodEle/I");
+    tout->Branch("nGoodMuon", &nGoodMuon, "nGoodMuon/I");
+    tout->Branch("nGoodPhoton", &nGoodPhoton, "nGoodPhoton/I");
 
     const double Z_MASS = 91.19; // [GeV]
     // --- 5) 필요한 입력 브랜치 주소 ---
+    static const int MAXP_64 = 64;
+    static const int MAXP_128 = 128;    
     Bool_t HLT_Ele32_WPTight_Gsf;
     Bool_t HLT_Ele30_WPTight_Gsf;
     Bool_t HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
@@ -116,54 +135,56 @@ void reco_single_muon(const char* sampleType,
     Bool_t Flag_ecalBadCalibFilter;
 
     Int_t   nElectron = 0;
-    Bool_t  Electron_mvaIso_WP80[16];
-    Int_t   Electron_charge[16];
-    Float_t Electron_pt[16];
-    Float_t Electron_eta[16];
-    Float_t Electron_phi[16];
-    Float_t Electron_mass[16];
-    Float_t Electron_dz[16]; // New
-    Float_t Electron_dzErr[16]; // New
-    Float_t Electron_dxy[16]; // New
-    Float_t Electron_dxyErr[16]; // New
-    Float_t Electron_mvaHZZIso[16]; // New
-    Float_t Electron_miniPFRelIso_all[16]; // New
-    Float_t Electron_deltaEtaSC[16]; // New
-    Short_t Electron_photonIdx[16]; // New
-    Short_t Electron_fsrPhotonIdx[16]; // New
+    Bool_t  Electron_mvaIso_WP80[MAXP_64];
+    Int_t   Electron_charge[MAXP_64];
+    Float_t Electron_pt[MAXP_64];
+    Float_t Electron_eta[MAXP_64];
+    Float_t Electron_phi[MAXP_64];
+    Float_t Electron_mass[MAXP_64];
+    Float_t Electron_dz[MAXP_64]; // New
+    Float_t Electron_dzErr[MAXP_64]; // New
+    Float_t Electron_dxy[MAXP_64]; // New
+    Float_t Electron_dxyErr[MAXP_64]; // New
+    Float_t Electron_mvaHZZIso[MAXP_64]; // New
+    Float_t Electron_miniPFRelIso_all[MAXP_64]; // New
+    Float_t Electron_deltaEtaSC[MAXP_64]; // New
+    Short_t Electron_photonIdx[MAXP_64]; // New
+    Short_t Electron_fsrPhotonIdx[MAXP_64]; // New
 
     Int_t nMuon = 0;
-    Bool_t Muon_isTracker[16];
-    Bool_t Muon_looseId[16];
-    Float_t Muon_dz[16];
-    Float_t Muon_dxy[16];
-    Float_t Muon_sip3d[16];
-    Float_t Muon_pfRelIso03_all[16];
-    Float_t Muon_miniPFRelIso_all[16];
-    Float_t Muon_pt[16];
-    Float_t Muon_eta[16];
-    Float_t Muon_phi[16];
-    Float_t Muon_mass[16]; 
-    Int_t   Muon_charge[16];
+    Bool_t Muon_isTracker[MAXP_64];
+    Bool_t Muon_looseId[MAXP_64];
+    Float_t Muon_dz[MAXP_64];
+    Float_t Muon_dxy[MAXP_64];
+    Float_t Muon_sip3d[MAXP_64];
+    Float_t Muon_pfRelIso03_all[MAXP_64];
+    Float_t Muon_miniPFRelIso_all[MAXP_64];
+    Float_t Muon_pt[MAXP_64];
+    Float_t Muon_eta[MAXP_64];
+    Float_t Muon_phi[MAXP_64];
+    Float_t Muon_mass[MAXP_64]; 
+    Int_t   Muon_charge[MAXP_64];
 
     Int_t   nPhoton = 0;
-    Bool_t  Photon_mvaID_WP80[16];
-    Short_t Photon_electronIdx[16];
-    Float_t Photon_pt[16];
-    Float_t Photon_eta[16];
-    Float_t Photon_phi[16];
-    Float_t Photon_superclusterEta[16]; // New
-    Bool_t Photon_isScEtaEB[16]; // New
-    Bool_t Photon_isScEtaEE[16]; // New
+    Bool_t  Photon_mvaID_WP80[MAXP_128];
+    Short_t Photon_electronIdx[MAXP_128];
+    Float_t Photon_pt[MAXP_128];
+    Float_t Photon_eta[MAXP_128];
+    Float_t Photon_phi[MAXP_128];
+    Float_t Photon_superclusterEta[MAXP_128]; // New
+    Bool_t Photon_isScEtaEB[MAXP_128]; // New
+    Bool_t Photon_isScEtaEE[MAXP_128]; // New
+    UChar_t PV_npvsGood;
+    Float_t PV_x = 0.0f, PV_y = 0.0f, PV_z = 0.0f; // NEW
    
     Int_t nFsrPhoton = 0;
-    Short_t FsrPhoton_electronIdx[16];
-    Short_t FsrPhoton_muonIdx[16];
-    Float_t FsrPhoton_dROverEt2[16];
-    Float_t FsrPhoton_eta[16];
-    Float_t FsrPhoton_phi[16];
-    Float_t FsrPhoton_pt[16];
-    Float_t FsrPhoton_relIso03[16];
+    Short_t FsrPhoton_electronIdx[MAXP_128];
+    Short_t FsrPhoton_muonIdx[MAXP_128];
+    Float_t FsrPhoton_dROverEt2[MAXP_128];
+    Float_t FsrPhoton_eta[MAXP_128];
+    Float_t FsrPhoton_phi[MAXP_128];
+    Float_t FsrPhoton_pt[MAXP_128];
+    Float_t FsrPhoton_relIso03[MAXP_128];
 
     //tin->SetBranchAddress("", &);  // New  
     // HLT
@@ -236,6 +257,10 @@ void reco_single_muon(const char* sampleType,
     }
     tin->SetBranchAddress("Photon_isScEtaEB", &Photon_isScEtaEB);  // New  
     tin->SetBranchAddress("Photon_isScEtaEE", &Photon_isScEtaEE);  // New  
+    tin->SetBranchAddress("PV_npvsGood", &PV_npvsGood);
+    tin->SetBranchAddress("PV_x", &PV_x);
+    tin->SetBranchAddress("PV_y", &PV_y);
+    tin->SetBranchAddress("PV_z", &PV_z);
 
     // FsrPhoton
     tin->SetBranchAddress("nFsrPhoton", &nFsrPhoton); // New
@@ -289,6 +314,7 @@ void reco_single_muon(const char* sampleType,
         // 기본값 초기화
         Z_mass_mm  = -1.0;
         Z_mass_mmg = -1.0;
+        Photon_SCeta.clear();
 
         // -----------------------------
         // goodElectron index list
@@ -319,11 +345,12 @@ void reco_single_muon(const char* sampleType,
         }
 
         // lead/sublead 찾기 for HLT cut.
-        int leadEleIdx = -1;
-        int subleadEleIdx = -1;
+        leadEleIdx = -1;
+        subleadEleIdx = -1;
         float leadElePt = -1.0;
         float subleadElePt = -1.0;
 
+        nGoodEle = goodEle.size();
         for (int idx : goodEle) {
             float pt = Electron_pt[idx];
 
@@ -382,11 +409,12 @@ void reco_single_muon(const char* sampleType,
             goodMuon.push_back(im);
         }
 
-        int leadMuonIdx = -1;
-        int subleadMuonIdx = -1;
+        leadMuonIdx = -1;
+        subleadMuonIdx = -1;
         float leadMuonPt = -1.0;
         float subleadMuonPt = -1.0;
 
+        nGoodMuon = goodMuon.size();
         for (int idx : goodMuon) {
             float pt = Muon_pt[idx];
 
@@ -410,6 +438,10 @@ void reco_single_muon(const char* sampleType,
         int nPhoToCheck = std::min(nPhoton, 16);
 
         for (int ig = 0; ig < nPhoToCheck; ++ig) {
+            // Calculate Photon_SCeta
+            const bool isEB = (Photon_isScEtaEB[ig] == 1);
+            float eta_for_sc = ComputeOriginEtaFromPV(isEB, Photon_eta[ig], Photon_phi[ig], PV_x, PV_y, PV_z); Photon_SCeta.push_back(eta_for_sc);
+            float abs_eta_sc = std::fabs(eta_for_sc); 
 
             // 1) MVA WP80 cut
             if (Photon_mvaID_WP80[ig] != 1) continue;
@@ -417,11 +449,7 @@ void reco_single_muon(const char* sampleType,
             // 2) pt cut
             if (Photon_pt[ig] <= 15) continue;
 
-            // 3) isScEtaEB, |eta_sc| < 1.4442 "or" isScEtaEE, 1.566 < |eta_sc| < 2.5
-            float eta_for_sc = has_Photon_superclusterEta
-                            ? Photon_superclusterEta[ig]
-                            : Photon_eta[ig];
-            float abs_eta_sc = std::fabs(eta_for_sc);
+            // 3) Always use PhotonSCeta.h. isScEtaEB, |eta_sc| < 1.4442 "or" isScEtaEE, 1.566 < |eta_sc| < 2.5
             bool inEB = (Photon_isScEtaEB[ig] == 1 && abs_eta_sc < 1.4442f);
             bool inEE = (Photon_isScEtaEE[ig] == 1 && abs_eta_sc > 1.566f && abs_eta_sc < 2.5f);
             if (!(inEB || inEE)) continue;
@@ -499,6 +527,7 @@ void reco_single_muon(const char* sampleType,
             // 모든 조건을 통과한 FsrPhoton
             goodFsr.push_back(i);
         }
+        nGoodPhoton = goodPhoton.size();
 
         // --------------------------------
         // Event Selection & Reconstruction
@@ -615,6 +644,7 @@ void reco_single_muon(const char* sampleType,
                 // std::cout << "Z_mmg updated : " << Z_mass_mmg << std::endl;
         
                 AddPhoton_pt = Photon_pt[best_pho]; // To save.
+                AddPhoton_eta = Photon_eta[best_pho]; // To save.
                 double dr1 = g.DeltaR(mu1);
                 double dr2 = g.DeltaR(mu2);
                 dR_mg = std::min(dr1, dr2);

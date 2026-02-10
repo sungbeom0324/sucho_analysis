@@ -30,6 +30,7 @@ SRCDIR="/u/user/sucho/cms_open_data_root/sucho_analysis/cutflow"
 
 cp "${SRCDIR}/cutflow_single.C" "${WORKDIR}/" || exit 1
 cp "${SRCDIR}/GoodLumi.h" "${WORKDIR}/" || exit 1
+cp "${SRCDIR}/PhotonSCeta.h" "${WORKDIR}/" || exit 1
 cp "${SRCDIR}/json.hpp" "${WORKDIR}/" || exit 1
 cp "${SRCDIR}/Cert_Collisions2023_366442_370790_Golden.json" "${WORKDIR}/" || exit 1
 cp "${SRCDIR}/Cert_Collisions2024_378981_386951_Golden.json" "${WORKDIR}/" || exit 1
