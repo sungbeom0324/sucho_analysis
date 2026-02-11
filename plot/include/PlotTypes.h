@@ -67,5 +67,41 @@ struct CompareJob {
   std::vector<Hist1D> h1;
 };
 
+// ------------ 3 chains -> compare 1D ---------
+struct CompareJob3 {
+  std::string listA;
+  std::string listB;
+  std::string listC;
+  std::string treename = "Events";
+
+  std::string tag;
+  std::string labelA = "A";
+  std::string labelB = "B";
+  std::string labelC = "C";
+    
+  std::string baseCut; // 공통 selection
+  std::string textKey = "";  // e.g. "txt_baseline" 
+
+  // blind 옵션: expr == blindVar 인 plot에만 blind 적용
+  bool useBlind = false;
+  std::string blindVar;
+  double blindMin = 0.0;
+  double blindMax = 0.0;
+
+  // -------------------------
+  // NEW: normalization control
+  // normMode:
+  //   0 = shape (기존) : integral=1
+  //   1 = per-lumi     : scale by 1/lumi (Events per 1 fb^-1)
+  // -------------------------
+  int normMode = 0;
+  double lumiA_fb = 1.0;
+  double lumiB_fb = 1.0;
+  double lumiC_fb = 1.0;
+
+  std::vector<Hist1D> h1;
+};
+
+
 #endif
 

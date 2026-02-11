@@ -75,7 +75,7 @@ cd "${WORKDIR}" || {
 }
 
 # 6) 출력 base 디렉토리
-BASE_OUT="/u/user/sucho/SE_UserHome/reco_Feb03/"
+BASE_OUT="/u/user/sucho/SE_UserHome/reco/"
 echo "[INFO] BASE_OUT = ${BASE_OUT}"
 
 # 7) 연도에 따라 JSON 파일명 선택.
