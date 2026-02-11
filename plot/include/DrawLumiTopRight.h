@@ -27,4 +27,31 @@ inline void DrawLumiTopRight(double lumiA_fb,
   latex.DrawLatex(x, y, line);
 }
 
+inline void DrawLumiTopRight(double lumiA_fb,
+                             double lumiB_fb,
+                             double lumiC_fb,
+                             const char* labelA,
+                             const char* labelB,
+                             const char* labelC,
+                             const char* extra = "(13.6 TeV)",
+                             double y = 0.925,
+                             double x = 0.90)
+{
+  TLatex latex;
+  latex.SetNDC();
+  latex.SetTextAlign(31);
+  latex.SetTextFont(42);
+  latex.SetTextSize(0.035);
+
+  TString line = Form("%s: %.1f fb^{-1}, %s: %.1f fb^{-1}, %s: %.1f fb^{-1}",
+                      labelA, lumiA_fb, labelB, lumiB_fb, labelC, lumiC_fb);
+
+  if (extra && TString(extra).Length() > 0) {
+    line += " ";
+    line += extra;
+  }
+
+  latex.DrawLatex(x, y, line);
+}
+
 #endif

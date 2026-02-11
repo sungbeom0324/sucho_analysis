@@ -214,9 +214,9 @@ void palette_all(const char* outdir = "plots_out") {
 
   std::vector<CompareJob3> CompareJob3 = {
     { // EGamma 22EE_23_24
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2022EFG_EGamma_NanoAODv12_reco_FEW.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2023TOT_EGamma_NanoAODv12_reco_FEW.txt",
-      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2024TOT_EGamma_PromptReco_reco_FEW.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2022EFG_EGamma_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2023TOT_EGamma_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2024TOT_EGamma_PromptReco_reco.txt",
       "Events",
 
       "EGamma_2022EFG_2023TOT_2024TOT",
@@ -237,6 +237,7 @@ void palette_all(const char* outdir = "plots_out") {
         { "Z_mass_ee",  "Z_mass_ee",  60,  60, 120, "m_{ee} [GeV]" },
         { "Z_mass_eeg", "Z_mass_eeg", 80,  80, 200, "m_{ee#gamma} [GeV]" },
         { "dR_eg",      "dR_eg",      40,   0,   4, "#DeltaR(e,#gamma)" },
+        { "PV_npvs", "PV_npvs", 100, 0, 100, "PV_npvs"},
         { "PV_npvsGood", "PV_npvsGood", 100, 0, 100, "PV_npvsGood"},
         { "AddPhoton_pt/Z_mass_eeg", "AddPhoton_pt/Z_mass_eeg", 60, 0, 0.6, "p^{#gamma}_{T}/m_{ee#gamma}"},
         { "nGoodEle", "nGoodEle", 5,0,5},
@@ -250,8 +251,46 @@ void palette_all(const char* outdir = "plots_out") {
         { "AddPhoton_pt", "AddPhoton_pt", 100, 0, 100 },
         { "AddPhoton_eta", "AddPhoton_eta", 60, -3, 3 },
       }
-
       },
+
+    { // Muon 22EE_23_24
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2022EFG_Muon_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2023TOT_Muon_NanoAODv12_reco.txt",
+      "/pnfs/knu.ac.kr/data/cms/store/user/sucho/reco/data/list_2024TOT_Muon_PromptReco_reco.txt",
+      "Events",
+
+      "Muon_2022EFG_2023TOT_2024TOT",
+      "22EE_Muon", 
+      "23Muon",
+      "24Muon",
+
+      "", // baseCut
+      "txt_baseline", // Text key
+      false, "", 0, 0, // blind off
+      
+      1,
+      26.6717,
+      27.756,
+      108.95,
+
+      { // Vector of 1D Histogramas.
+        { "Z_mass_mm",  "Z_mass_mm",  60,  60, 120, "m_{#mu#mu} [GeV]" },
+        { "Z_mass_mmg", "Z_mass_mmg", 80,  80, 200, "m_{#mu#mu#gamma} [GeV]" },
+        { "dR_mg",      "dR_mg",      40,   0,   4, "#DeltaR(#mu,#gamma)" },
+        { "PV_npvs", "PV_npvs", 100, 0, 100, "PV_npvs"},
+        { "PV_npvsGood", "PV_npvsGood", 100, 0, 100, "PV_npvsGood"},
+        { "AddPhoton_pt/Z_mass_mmg", "AddPhoton_pt/Z_mass_mmg", 60, 0, 0.6, "p^{#gamma}_{T}/m_{#mu#mu#gamma}"},
+        { "nGoodMuon", "nGoodMuon", 5,0,5},
+        { "Muon1_pt", "Muon_pt[leadMuonIdx]", 200, 0, 200, "Muon1_pt"},
+        { "Muon2_pt", "Muon_pt[subleadMuonIdx]", 100, 0, 100, "Muon2_pt"},
+        { "Muon1_SCeta", "Muon_eta[leadMuonIdx]", 60, -3, 3, "Muon1_eta"},
+        { "Muon2_SCeta", "Muon_eta[subleadMuonIdx]", 60, -3, 3,"Muon2_eta"},
+        { "nGoodPhoton", "nGoodPhoton", 5, 0, 5 },
+        { "AddPhoton_pt", "AddPhoton_pt", 100, 0, 100 },
+        { "AddPhoton_eta", "AddPhoton_eta", 60, -3, 3 },
+      }
+      },
+
     };
   // ------------------------------------------------------------
   // Run

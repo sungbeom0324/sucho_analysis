@@ -90,25 +90,27 @@ void PlotComparePDF_3(const std::vector<CompareJob3>& jobs, const char* outdir) 
       TLegend leg(0.12, 0.76, 0.42, 0.88);
       leg.SetBorderSize(0);
       leg.SetTextSize(0.032);
+      leg.SetFillStyle(0); // Transparent
+      leg.SetFillColor(0);
       leg.AddEntry(&hA, job.labelA.c_str(), "l");
       leg.AddEntry(&hB, job.labelB.c_str(), "l");
-      leg.AddEntry(&hB, job.labelC.c_str(), "l");
+      leg.AddEntry(&hC, job.labelC.c_str(), "l");
       leg.Draw();
 
       DrawCMSLabel(0.12, 0.96, "Run3", true); 
-      DrawLumiTopRight(job.lumiA_fb, job.lumiB_fb, job.labelA.c_str(), job.labelB.c_str(), job.labelC.c_str());
+      DrawLumiTopRight(job.lumiA_fb, job.lumiB_fb, job.lumiC_fb,  job.labelA.c_str(), job.labelB.c_str(), job.labelC.c_str());
 
       auto lines = GetPlotTextPreset(job.textKey);
       DrawTextBlockTR(lines);
 
       // Ratio sub-plot
       p2.cd();
-      TH1D* r = makeRatio(hB, hA, "ratio");
+      TH1D* r = makeRatio(hC, hA, "ratio");
       r->SetMarkerStyle(20);
       r->SetMarkerSize(0.6);
       r->SetLineWidth(2);
 
-      r->GetYaxis()->SetTitle((job.labelB + " / " + job.labelA).c_str());
+      r->GetYaxis()->SetTitle((job.labelC + " / " + job.labelA).c_str());
       r->GetYaxis()->SetNdivisions(505);
       r->GetYaxis()->SetTitleSize(0.10);
       r->GetYaxis()->SetTitleOffset(0.45);
