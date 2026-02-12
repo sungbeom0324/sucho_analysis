@@ -1,7 +1,7 @@
 #ifndef DRAW_CMS_LABEL_H
 #define DRAW_CMS_LABEL_H
 
-#include "TLatex.h"
+#include <TLatex.h>
 #include <cmath>
 
 // CMS Run 3 (Preliminary) in ONE LINE

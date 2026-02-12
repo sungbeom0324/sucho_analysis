@@ -8,3 +8,8 @@
 # Step 3. Merge
 - 결과물은 result/ 안에 쌓이고
 - ./merge_cutflow.sh 하면 하나로 합친다.
+
+# Fast Usage
+Local :
+root -l -q 'cutflow_single.C+("data","/path/to/input.root","ele","Cert_Collisions2023_366442_370790_Golden.json","results")'
+root -l -q 'cutflow_single.C+("data","/path/to/input.root","mu","Cert_Collisions2023_366442_370790_Golden.json","results")'

@@ -1,16 +1,10 @@
-// cutflow_single.C
-// Usage (local):
-//   root -l -q 'cutflow_single.C+("data","/path/to/input.root","ele","Cert_Collisions2023_366442_370790_Golden.json","results")'
-//   root -l -q 'cutflow_single.C+("data","/path/to/input.root","mu","Cert_Collisions2023_366442_370790_Golden.json","results")'
-
 #include "GoodLumi.h" // GoldenJson (LoadGoldenJSON, PassesGoodLumi, goodLumiMap)
 #include "PhotonSCeta.h" // Calculate PhotonSCeta
-
-#include "TSystem.h"
-#include "TFile.h"
-#include "TTree.h"
-#include "TLorentzVector.h"
-
+#include "include/HelperInline.h" // Helper Inline Functions for ID calculations.
+#include <TSystem.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TLorentzVector.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -19,24 +13,6 @@
 #include <cmath>
 #include <algorithm>
 
-// --- helpers (same as your cutflow.C) ---
-static inline float ConvertMVA(float mva_mini) {
-  return 2.0f / (1.0f + std::exp(-2.0f * mva_mini)) - 1.0f;
-}
-
-static inline bool HzzId_WP2022(float pt, float etasc, float hzzmvaid) {
-  const float aeta = std::fabs(etasc);
-
-  if (pt < 10.0f) {
-    if (aeta < 0.8f)         return (hzzmvaid > ConvertMVA(1.6339f));
-    else if (aeta < 1.479f)  return (hzzmvaid > ConvertMVA(1.5499f));
-    else                     return (hzzmvaid > ConvertMVA(2.0629f));
-  } else {
-    if (aeta < 0.8f)         return (hzzmvaid > ConvertMVA(0.3685f));
-    else if (aeta < 1.479f)  return (hzzmvaid > ConvertMVA(0.2662f));
-    else                     return (hzzmvaid > ConvertMVA(-0.5444f));
-  }
-}
 
 static void PrintCutflow(const std::vector<std::string>& names,
                          const std::vector<long long>& cnt) {
@@ -230,7 +206,7 @@ void cutflow_single(const char* sampleType,
   };
   std::vector<long long> cnt(cutNames.size(), 0);
 
-  const double Z_MASS = 91.19;
+  const double Z_MASS = 91.1876;
 
   // ---------------------------
   // 3) Event loop (same logic as your cutflow.C)
@@ -249,7 +225,7 @@ void cutflow_single(const char* sampleType,
     }
 
     // build good object lists
-    std::vector<int> goodEle, goodMu, goodPho;
+    std::vector<int> goodEle, goodMuon, goodPho;
 
     // electrons
     for (int ie = 0; ie < std::min(nElectron, 16); ++ie) {
@@ -284,10 +260,10 @@ void cutflow_single(const char* sampleType,
       if (std::fabs(Muon_dxy[im]) >= 0.5) continue;
       if (Muon_sip3d[im] >= 4.0) continue; // In AN it is < 4, thus >= 4.0
       if (Muon_pfRelIso03_all[im] >= 0.35) continue;
-      goodMu.push_back(im);
+      goodMuon.push_back(im);
     }
     float leadMuPt = -1.0, subleadMuPt = -1.0;
-    for (int idx : goodMu) {
+    for (int idx : goodMuon) {
       float pt = Muon_pt[idx];
       if (pt > leadMuPt) { subleadMuPt = leadMuPt; leadMuPt = pt; }
       else if (pt > subleadMuPt) { subleadMuPt = pt; }
@@ -318,7 +294,7 @@ void cutflow_single(const char* sampleType,
         if (g.DeltaR(e) < 0.3) { overlap = true; break; }
       }
       if (!overlap) {
-        for (int im : goodMu) {
+        for (int im : goodMuon) {
           TLorentzVector m; m.SetPtEtaPhiM(Muon_pt[im], Muon_eta[im], Muon_phi[im], 0.0);
           if (g.DeltaR(m) < 0.3) { overlap = true; break; }
         }
@@ -333,15 +309,9 @@ void cutflow_single(const char* sampleType,
 
     // S1
     bool HLTpass =
-      //(HLT_Ele32_WPTight_Gsf==1 && leadElePt > 35) ||
       (HLT_Ele30_WPTight_Gsf==1 && leadElePt > 35) ||
       (HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL==1 && leadElePt > 25 && subleadElePt > 15) ||
-      //(HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ==1 && leadElePt > 25 && subleadElePt > 15) ||
       (HLT_IsoMu24==1 && leadMuPt > 25) ||  // 25 in AN ; 20 in draw_pico
-      //(HLT_IsoMu27==1 && leadMuPt > 28) ||  // 28 in AN ; 20 in draw_pico
-      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL==1 && leadMuPt > 20 && subleadMuPt > 10) ||
-      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ==1 && leadMuPt > 20 && subleadMuPt > 10) ||
-      //(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8==1 && leadMuPt > 20 && subleadMuPt > 10) ||
       (HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8==1 && leadMuPt > 20 && subleadMuPt > 10);
     if (!HLTpass) continue;
     cnt[2]++;
@@ -358,10 +328,10 @@ void cutflow_single(const char* sampleType,
         }
       }
     } else {
-      if ((int)goodMu.size() < 2) continue;
-      for (size_t a = 0; a < goodMu.size() && !hasOS; ++a) {
-        for (size_t b = a + 1; b < goodMu.size(); ++b) {
-          int i1 = goodMu[a], i2 = goodMu[b];
+      if ((int)goodMuon.size() < 2) continue;
+      for (size_t a = 0; a < goodMuon.size() && !hasOS; ++a) {
+        for (size_t b = a + 1; b < goodMuon.size(); ++b) {
+          int i1 = goodMuon[a], i2 = goodMuon[b];
           if (Muon_charge[i1] * Muon_charge[i2] == -1) { hasOS = true; break; }
         }
       }
@@ -394,9 +364,9 @@ void cutflow_single(const char* sampleType,
         }
       }
     } else {
-      for (size_t a = 0; a < goodMu.size(); ++a) {
-        for (size_t b = a + 1; b < goodMu.size(); ++b) {
-          int i1 = goodMu[a], i2 = goodMu[b];
+      for (size_t a = 0; a < goodMuon.size(); ++a) {
+        for (size_t b = a + 1; b < goodMuon.size(); ++b) {
+          int i1 = goodMuon[a], i2 = goodMuon[b];
           if (Muon_charge[i1] * Muon_charge[i2] != -1) continue;
           TLorentzVector m1, m2;
           m1.SetPtEtaPhiM(Muon_pt[i1], Muon_eta[i1], Muon_phi[i1], Muon_mass[i1]);
@@ -408,8 +378,8 @@ void cutflow_single(const char* sampleType,
       }
     }
 
-    double mll = best_mass;
-    if (mll < 80 || mll > 100) continue;
+    double Z_mass_ll = best_mass;
+    if (Z_mass_ll < 80 || Z_mass_ll > 100) continue;
     cnt[5]++;
 
     // leading photon (highest pT)
@@ -431,16 +401,16 @@ void cutflow_single(const char* sampleType,
       l2.SetPtEtaPhiM(Muon_pt[best_j], Muon_eta[best_j], Muon_phi[best_j], Muon_mass[best_j]);
     }
     TLorentzVector zll = l1 + l2;
-    double mllg = (zll + g).M();
-    double gpt  = Photon_pt[best_pho];
+    double Z_mass_llg = (zll + g).M();
+    double AddPhoton_pt  = Photon_pt[best_pho];
 
-    if ((gpt / mllg) <= (15.0/110.0)) continue;
+    if ((AddPhoton_pt / Z_mass_llg) <= (15.0/110.0)) continue;
     cnt[6]++;
 
-    if ((mllg + mll) <= 185.0) continue;
+    if ((Z_mass_llg + Z_mass_ll) <= 185.0) continue;
     cnt[7]++;
 
-    if (mllg <= 95 || mllg >= 180) continue; // Draw_pico is 100, AN is 95
+    if (Z_mass_llg <= 95 || Z_mass_llg >= 180) continue; // Draw_pico is 100, AN is 95
     cnt[8]++;
 
     bool EventFilterPass =
@@ -456,7 +426,7 @@ void cutflow_single(const char* sampleType,
     cnt[9]++;
 
     // control region
-    if (mllg > 120.0 && mllg < 130.0) continue;
+    if (Z_mass_llg > 120.0 && Z_mass_llg < 130.0) continue;
     cnt[10]++;
   }
 

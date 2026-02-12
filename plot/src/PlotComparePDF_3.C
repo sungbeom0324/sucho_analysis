@@ -52,9 +52,9 @@ void PlotComparePDF_3(const std::vector<CompareJob3>& jobs, const char* outdir) 
       applyNorm(hB, job.normMode, job.lumiB_fb);
       applyNorm(hC, job.normMode, job.lumiC_fb);
 
-      hA.SetLineColor(kRed + 1);
-      hB.SetLineColor(kBlue + 1);
-      hC.SetLineColor(kGreen + 1);
+      hA.SetLineColor(kGreen + 1);
+      hB.SetLineColor(kRed + 1);
+      hC.SetLineColor(kBlue + 1);
       hA.SetLineWidth(2);
       hB.SetLineWidth(2);
       hC.SetLineWidth(2);

@@ -41,7 +41,7 @@ inline void DrawLumiTopRight(double lumiA_fb,
   latex.SetNDC();
   latex.SetTextAlign(31);
   latex.SetTextFont(42);
-  latex.SetTextSize(0.035);
+  latex.SetTextSize(0.030);
 
   TString line = Form("%s: %.1f fb^{-1}, %s: %.1f fb^{-1}, %s: %.1f fb^{-1}",
                       labelA, lumiA_fb, labelB, lumiB_fb, labelC, lumiC_fb);

@@ -27,8 +27,8 @@ mkdir -p "${WORKDIR}" || exit 1
 
 # your cutflow source dir
 SRCDIR="/u/user/sucho/cms_open_data_root/sucho_analysis/cutflow"
-
 cp "${SRCDIR}/cutflow_single.C" "${WORKDIR}/" || exit 1
+cp -r "${SRCDIR}/include" "${WORKDIR}/" || exit 1
 cp "${SRCDIR}/GoodLumi.h" "${WORKDIR}/" || exit 1
 cp "${SRCDIR}/PhotonSCeta.h" "${WORKDIR}/" || exit 1
 cp "${SRCDIR}/json.hpp" "${WORKDIR}/" || exit 1
