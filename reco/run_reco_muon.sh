@@ -33,18 +33,10 @@ cp "${SRCDIR}/reco_single_muon.C" "${WORKDIR}/" || {
     exit 1
 }
 
+cp -r "${SRCDIR}/../include" "${WORKDIR}/" || exit 1
+
 cp "${SRCDIR}/MakeSkimOutputPath.h" "${WORKDIR}/" || {
     echo "[ERROR] Failed to copy MakeSkimOutputPath.h" >&2
-    exit 1
-}
-
-cp "${SRCDIR}/GoodLumi.h" "${WORKDIR}/"|| {
-    echo "[ERROR] Failed to copy GoodLumi.h" >&2
-    exit 1
-}
-
-cp "${SRCDIR}/PhotonSCeta.h" "${WORKDIR}/"|| {
-    echo "[ERROR] Failed to copy GoodLumi.h" >&2
     exit 1
 }
 
@@ -75,7 +67,7 @@ cd "${WORKDIR}" || {
 }
 
 # 6) 출력 base 디렉토리
-BASE_OUT="/u/user/sucho/SE_UserHome/reco/"
+BASE_OUT="/u/user/sucho/SE_UserHome/reco_TEST/"
 echo "[INFO] BASE_OUT = ${BASE_OUT}"
 
 # 7) 연도에 따라 JSON 파일명 선택.

@@ -1,5 +1,5 @@
-#include "GoodLumi.h" // GoldenJson (LoadGoldenJSON, PassesGoodLumi, goodLumiMap)
-#include "PhotonSCeta.h" // Calculate PhotonSCeta
+#include "include/GoodLumi.h" // GoldenJson (LoadGoldenJSON, PassesGoodLumi, goodLumiMap)
+#include "include/PhotonSCeta.h" // Calculate PhotonSCeta
 #include "include/HelperInline.h" // Helper Inline Functions for ID calculations.
 #include <TSystem.h>
 #include <TFile.h>
@@ -12,7 +12,6 @@
 #include <string>
 #include <cmath>
 #include <algorithm>
-
 
 static void PrintCutflow(const std::vector<std::string>& names,
                          const std::vector<long long>& cnt) {

@@ -1,6 +1,7 @@
 #include "MakeSkimOutputPath.h"  // used in skim.
-#include "GoodLumi.h" // GoldenJson
-#include "PhotonSCeta.h"
+#include "include/GoodLumi.h" // GoldenJson
+#include "include/PhotonSCeta.h"
+#include "include/HelperInline.h" // Helper Inline Functions for ID calculations.
 #include <TFile.h>
 #include <TTree.h>
 #include <TTreeFormula.h>
@@ -12,27 +13,6 @@
 #include <string>
 #include <set>
 
-// --- HZZ MVA WP helper (https://github.com/sungbeom0324/nano2pico/blob/master/src/el_producer.cpp) ---
-static inline float ConvertMVA(float mva_mini) {
-    // 2.0 / (1.0 + exp(-2.0 * response)) - 1
-    return 2.0f / (1.0f + std::exp(-2.0f * mva_mini)) - 1.0f;
-}
-
-static inline bool HzzId_WP2022(float pt, float etasc, float hzzmvaid) {
-    // 2022 WPs for 2018 ID training
-    // thresholds are given in "mini" scale -> convert to nano scale via ConvertMVA
-    const float aeta = std::fabs(etasc);
-
-    if (pt < 10.0f) {
-        if (aeta < 0.8f)         return (hzzmvaid > ConvertMVA(1.6339f));
-        else if (aeta < 1.479f)  return (hzzmvaid > ConvertMVA(1.5499f));
-        else                     return (hzzmvaid > ConvertMVA(2.0629f));
-    } else {
-        if (aeta < 0.8f)         return (hzzmvaid > ConvertMVA(0.3685f));
-        else if (aeta < 1.479f)  return (hzzmvaid > ConvertMVA(0.2662f));
-        else                     return (hzzmvaid > ConvertMVA(-0.5444f));
-    }
-}
 
 void reco_single(const char* sampleType,
                  const char* inFileName,
