@@ -7,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-inline std::string MakeSkimOutputPath(const char* sampleType,
+inline std::string MakeOutputPath(const char* sampleType,
                                       const char* inFileName,
                                       const char* baseOutDir = "/u/user/sucho/SE_UserHome/reco")
 {

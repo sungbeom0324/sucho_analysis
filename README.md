@@ -9,6 +9,10 @@ Author : Sungbeom Cho (Korea Univ.)
 
 NOTE : To be updated to use relative paths, along with a cleanup of external dependency files.  
 
+## After git clone,
+'''bash
+source set_env.sh
+'''
 ___
 ### slim
 Input : list.txt of .root files in your store.  
