@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 1) 입력 ROOT 파일 (slimmed 파일)
+# [ARGUMENT] Input root file.
 INPUT_FILE="$1"
 
 if [ -z "$INPUT_FILE" ]; then
@@ -11,7 +11,7 @@ fi
 echo "[INFO] Starting reco for: ${INPUT_FILE}"
 date
 
-# 2) ROOT 환경 세팅 (slim 때 쓰던 거 그대로)
+# Setup ROOT
 source /cvmfs/sft.cern.ch/lcg/releases/LCG_106a/ROOT/6.32.06/x86_64-el9-gcc13-opt/ROOT-env.sh
 
 # 3) Condor 잡마다 고유한 작업 디렉토리 (/tmp 밑에)

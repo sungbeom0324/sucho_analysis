@@ -1,61 +1,15 @@
-// 파일 이름: slim_single.C
-
+#include "include/MakeOutputPath.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TSystem.h"
 #include <string>
 #include <iostream>
 
-std::string MakeSlimOutputPath(const char* inFileName,
-                               const char* baseOutDir = "/u/user/sucho/SE_UserHome/slimmed")
-{
-    std::string in(inFileName);
-    std::string base(baseOutDir);
-
-    // Parsing inpput file path after final "data/". See e.g. below.
-    // input = /u/user/sucho/SE_UserHome/cms/store/data/Run2024D/EGamma0/NANOAOD/PromptReco-v1/000/380/567/00000/d6d3e72d-78f6-4c37-a19f-3e8686f748c9.root
-    // relPath = data/Run2024D/EGamma0/...
-    const std::string key = "data/";
-    size_t pos = in.rfind(key);
-    std::string relPath;
-
-    if (pos != std::string::npos) {
-        relPath = in.substr(pos);   // e.g.: "data/Run2024D/EGamma0/..."
-    } else {
-        // If you don't find "/data", just use whole path.
-        relPath = gSystem->BaseName(inFileName);
-    }
-
-    // relPath -> 디렉토리 + 파일 이름 분리
-    std::string tmp = "/" + relPath;                 // 절대경로처럼 보이게
-    std::string relDir  = gSystem->DirName(tmp.c_str());   // "/data/Run2024D/..."
-    std::string relFile = gSystem->BaseName(tmp.c_str());  // "xxxxx.root"
-
-    if (!relDir.empty() && relDir[0] == '/') relDir.erase(0,1); // 앞 '/' 제거 → "data/Run2024D/..."
-
-    // 3) 출력 디렉토리 전체 경로
-    std::string outDir = base + "/" + relDir;
-    gSystem->mkdir(outDir.c_str(), true);
-
-    // 4) 파일 이름에 "_slimmed" 삽입
-    const std::string ext = ".root";
-    size_t dot = relFile.rfind(ext);
-    if (dot != std::string::npos) {
-        relFile.insert(dot, "_slimmed");
-    } else {
-        relFile += "_slimmed";
-    }
-
-    // 5) 최종 출력 전체 경로
-    return outDir + "/" + relFile;
-}
-
-
 void slim_single(const char* inFileName,
-                         const char* baseOutDir = "/u/user/sucho/SE_UserHome/slimmed")
+                 const char* baseOutDir = "/u/user/sucho/SE_UserHome/slimmed_TEST")
 {
     // 0) 출력 경로 구성
-    std::string outFileName = MakeSlimOutputPath(inFileName, baseOutDir);
+    std::string outFileName = MakeOutputPath("data", inFileName, baseOutDir);
     std::cout << "[INFO] Output file = " << outFileName << std::endl;
 
     // 1) 입력 파일 열기
@@ -117,10 +71,10 @@ void slim_single(const char* inFileName,
 
     tin->SetBranchStatus("nElectron", 1);
     tin->SetBranchStatus("Electron_charge", 1);
-    tin->SetBranchStatus("Electron_dz", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.1 Electrons)
-    tin->SetBranchStatus("Electron_dzErr", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.1 Electrons)
-    tin->SetBranchStatus("Electron_dxy", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.1 Electrons)
-    tin->SetBranchStatus("Electron_dxyErr", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.1 Electrons)
+    tin->SetBranchStatus("Electron_dz", 1);
+    tin->SetBranchStatus("Electron_dzErr", 1); 
+    tin->SetBranchStatus("Electron_dxy", 1); 
+    tin->SetBranchStatus("Electron_dxyErr", 1);
     tin->SetBranchStatus("Electron_pt", 1);
     tin->SetBranchStatus("Electron_eta", 1);
     tin->SetBranchStatus("Electron_phi", 1);
@@ -177,7 +131,7 @@ void slim_single(const char* inFileName,
     tin->SetBranchStatus("Muon_pfRelIso03_all", 1);
     tin->SetBranchStatus("Muon_pfRelIso04_all", 1);
     tin->SetBranchStatus("Muon_isTracker", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.2)
-    tin->SetBranchStatus("Muon_triggerIdLoose", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.2) central cut-based looseID?
+    tin->SetBranchStatus("Muon_triggerIdLoose", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.2)
     tin->SetBranchStatus("Muon_tkRelIso", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.2)
     tin->SetBranchStatus("Muon_miniPFRelIso_all", 1); // New Dec06 (AN-22-027_v4.pdf_3.1.2)
 

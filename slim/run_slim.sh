@@ -32,6 +32,8 @@ cp "${SRCDIR}/slim_single.C" "${WORKDIR}/" || {
     exit 1
 }
 
+cp -r "${SRCDIR}/../include" "${WORKDIR}/" || exit 1
+
 # 5) 작업 디렉토리로 이동
 cd "${WORKDIR}" || {
     echo "[ERROR] cd to WORKDIR failed" >&2
@@ -39,7 +41,7 @@ cd "${WORKDIR}" || {
 }
 
 # 6) 출력 base 디렉토리
-BASE_OUT="/u/user/sucho/SE_UserHome/slimmed"
+BASE_OUT="/u/user/sucho/SE_UserHome/slimmed_TEST"
 echo "[INFO] BASE_OUT = ${BASE_OUT}"
 
 # 7) 여기에서만 ACLiC 컴파일 + 실행 (잡마다 다른 디렉토리이므로 충돌 X)
