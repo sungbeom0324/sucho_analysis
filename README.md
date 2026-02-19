@@ -14,6 +14,7 @@ Email : sucho@cern.ch
 ### How to Configure
 ```bash
 git clone git@github.com:sungbeom0324/sucho_analysis.git
+cd sucho_analysis
 source set_env.sh
 
 # Download external dependency file.
