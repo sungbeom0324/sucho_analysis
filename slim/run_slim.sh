@@ -37,7 +37,7 @@ WORKDIR="/tmp/${USER}/slim_${CID}_${PID}"
 mkdir -p "${WORKDIR}" || exit 1
 
 # ------------------------------------------------------------
-# 4) 소스 복사 (절대경로 제거됨)
+# 4) 소스 복사
 # ------------------------------------------------------------
 cp "${SLIM_DIR}/slim_single.C" "${WORKDIR}/" || exit 1
 cp -r "${ANALYSIS_BASE}/include" "${WORKDIR}/" || exit 1
