@@ -28,7 +28,7 @@ mkdir json
 
 cd $ANALYSIS_BASE | ls
 # Then, your working directory should look like :
-cutflow external include json plot READNE.md reco set_env.sh slim
+cutflow external include json plot README.md reco set_env.sh slim
 
 # Finally, define your output directory by modifing run_XXX.sh and submit_XXX.sub template files!
 ```
