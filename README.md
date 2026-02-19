@@ -1,18 +1,37 @@
----
-## sucho_analysis  
-Compact analysis tool for preocessing NanoAOD format data.  
-Author : Sungbeom Cho (Korea Univ.)  
-  
+sucho_analysis  
+==============
+
+Compact analysis tool for preocessing NanoAOD.  
+Author : Sungbeom Cho @ Korea University  
+Email : sucho@cern.ch
+
+---  
 - Primarily written for fast H → Zγ study with recent Run3 data.  
-- Less factorizations for rapid application and readability.  
+- Less factorizations for flexibility.  
 - HTCondor scripts are included for batch processing.
+---
 
-NOTE : To be updated to use relative paths, along with a cleanup of external dependency files.  
-
-## After git clone,
-'''bash
+### How to Configure
+```bash
+git clone git@github.com:sungbeom0324/sucho_analysis.git
 source set_env.sh
-'''
+
+# Download external dependency file.
+mkdir -p external/nlohmann
+curl -L https://raw.githubusercontent.com/nlohmann/json/v3.12.0/single_include/nlohmann/json.hpp \
+     -o external/nlohmann/json.hpp
+
+# Download Golden Json files for your run era and locate them in json directory.
+# https://cms-service-dqmdc.web.cern.ch/CAF/certification/ 
+mkdir json
+
+cd $ANALYSIS_BASE | ls
+# Then, your working directory should look like :
+cutflow reco slim plot include external json set_env.sh
+
+# Finally, define your output directory by modifing run_XXX.sh and submit_XXX.sub template files!
+```
+
 ___
 ### slim
 Input : list.txt of .root files in your store.  
