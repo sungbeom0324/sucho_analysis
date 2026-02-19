@@ -41,10 +41,10 @@ mkdir -p "${WORKDIR}" || exit 1
 # ------------------------------------------------------------
 cp "${RECO_DIR}/reco_single.C" "${WORKDIR}/" || exit 1
 cp -r "${ANALYSIS_BASE}/include" "${WORKDIR}/" || exit 1
-cp "${RECO_DIR}/json.hpp" "${WORKDIR}/"|| exit 1
-cp "${RECO_DIR}/Cert_Collisions2022_355100_362760_Golden.json" "${WORKDIR}/"|| exit 1
-cp "${RECO_DIR}/Cert_Collisions2023_366442_370790_Golden.json" "${WORKDIR}/"|| exit 1
-cp "${RECO_DIR}/Cert_Collisions2024_378981_386951_Golden.json" "${WORKDIR}/"|| exit 1
+cp -r "${ANALYSIS_BASE}/external" "${WORKDIR}/" || exit 1
+cp "${ANALYSIS_BASE}/json/Cert_Collisions2022_355100_362760_Golden.json" "${WORKDIR}/"|| exit 1
+cp "${ANALYSIS_BASE}/json/Cert_Collisions2023_366442_370790_Golden.json" "${WORKDIR}/"|| exit 1
+cp "${ANALYSIS_BASE}/json/Cert_Collisions2024_378981_386951_Golden.json" "${WORKDIR}/"|| exit 1
 
 # ------------------------------------------------------------
 # 5) 이동
