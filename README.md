@@ -11,7 +11,7 @@ Email : sucho@cern.ch
 - HTCondor scripts are included for batch processing.
 ---
 
-### How to Configure
+## How to Configure
 ```bash
 git clone git@github.com:sungbeom0324/sucho_analysis.git
 cd sucho_analysis
@@ -34,19 +34,49 @@ cutflow external include json plot README.md reco set_env.sh slim
 ```
 
 ___
+## How to Run
 ### slim
-Input : list.txt of .root files in your store.  
-Output : Slimmed .root files in the same hierarchy as store.
+Input : A list of root files in txt, specified at the last line of submit_XXX.sub
+Output : Root files with only branches of your interest.
+```bash
+cd $SLIM_DIR
+mkdir logs
+condor_submit submit_slim_2022EFG_EGamma_NanoAODv12_TEST.sub
+
+# monitor
+condor_q
+# cancel Job
+condor_rm <JobID>
+```
 
 ### reco
-Input : list_slimmed.txt (list of slimmed files).  
-Output : Reconstruct objects (eg. Z_mass_ee) and do skimming.
+Input : A list of root files in txt, specified at the last line of submit_XXX.sub
+Output : Root files with events passing certain criteria and including user-reconstructed variables, such as Z_mass.
+```bash
+cd $RECO_DIR
+mkdir logs
+condor_submit submit_reco_2022EFG_EGamma_NanoAODv12_TEST.sub
+```
 
 ### cutflow
-Input : list_reco.txt (list of reco-done files).  
+Input : A list of root files in txt, specified at the last line of submit_XXX.sub  
 Output : cutflow.txt for each root files. $\rightarrow$ You can merge them with merge_cutflow.sh
+```bash
+cd $CUTFLOW_DIR
+mkdir logs
+condor_submit submit_cutflow_2022EFG_EGamma_NanoAODv12.sub
+
+# Job completed, then merge the output.
+./merge_cutflow.sh result_2022EFG_EGamma_NanoAODv12 cutflow_result_2022EFG_EGamma_NanoAODv12.txt
+```
 
 ### plot
 Input : list_reco.txt  
 Output : plots/ directory containing multi-page pdf.
+```bash
+cd plot
+# Edit palette_all.C 
+root -l -q 'palette_all.C("plots_out")'
+```
+
 ___
