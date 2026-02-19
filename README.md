@@ -36,7 +36,7 @@ cutflow external include json plot README.md reco set_env.sh slim
 ___
 ## How to Run
 ### slim
-Input : A list of root files in txt, specified at the last line of submit_XXX.sub
+Input : A list of root files in txt, specified at the last line of submit_XXX.sub  
 Output : Root files with only branches of your interest.
 ```bash
 cd $SLIM_DIR
@@ -50,7 +50,7 @@ condor_rm <JobID>
 ```
 
 ### reco
-Input : A list of root files in txt, specified at the last line of submit_XXX.sub
+Input : A list of root files in txt, specified at the last line of submit_XXX.sub  
 Output : Root files with events passing certain criteria and including user-reconstructed variables, such as Z_mass.
 ```bash
 cd $RECO_DIR
